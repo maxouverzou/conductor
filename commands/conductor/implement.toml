@@ -81,7 +81,7 @@ CRITICAL: You must validate the success of every tool call. If any tool call fai
 
 ---
 
-## 6.0 SYNCHRONIZE PROJECT DOCUMENTATION
+## 4.0 SYNCHRONIZE PROJECT DOCUMENTATION
 **PROTOCOL: Update project-level documentation based on the completed track.**
 
 1.  **Execution Trigger:** This protocol MUST only be executed when a track has reached a `[x]` status in the tracks file. DO NOT execute this protocol for any other track status changes.
@@ -141,7 +141,7 @@ CRITICAL: You must validate the success of every tool call. If any tool call fai
 
 ---
 
-## 7.0 TRACK CLEANUP
+## 5.0 TRACK CLEANUP
 **PROTOCOL: Offer to archive or delete the completed track.**
 
 1.  **Execution Trigger:** This protocol MUST only be executed after the current track has been successfully implemented and the `SYNCHRONIZE PROJECT DOCUMENTATION` step is complete.
