@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
+import argparse
 import json
-import tomllib
 from pathlib import Path
+
+import tomllib
 
 
 def toml_to_md(infile: str, outfile: str, argument_hint: str | None = None) -> None:
@@ -29,7 +31,21 @@ def toml_to_md(infile: str, outfile: str, argument_hint: str | None = None) -> N
         outfile_handle.write(prompt.lstrip("\n"))
 
 
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(
+        description="Generate Claude plugin metadata and convert TOML commands to Markdown."
+    )
+    parser.add_argument(
+        "--repo-url",
+        default="https://github.com/gemini-cli-extensions/conductor",
+        help="Repository URL to use in generated plugin metadata.",
+    )
+    return parser.parse_args()
+
+
 def main() -> None:
+    args = parse_args()
+
     with open("gemini-extension.json", "r", encoding="utf-8") as infile_handle:
         extension = json.load(infile_handle)
 
@@ -49,7 +65,7 @@ def main() -> None:
             "url": "https://github.com/gemini-cli-extensions",
         },
         "homepage": "https://github.com/gemini-cli-extensions/conductor",
-        "repository": "https://github.com/gemini-cli-extensions/conductor",
+        "repository": args.repo_url,
         "license": "Apache-2.0",
         "keywords": [
             "conductor",
@@ -65,6 +81,28 @@ def main() -> None:
 
     with open(plugin_path, "w", encoding="utf-8") as outfile_handle:
         json.dump(plugin_payload, outfile_handle, indent=2)
+        outfile_handle.write("\n")
+
+    marketplace_payload = {
+        "name": "conductor-marketplace",
+        "owner": {
+            "name": "Gemini CLI Extensions",
+            "url": "https://github.com/gemini-cli-extensions",
+        },
+        "plugins": [
+            {
+                "name": "conductor",
+                "source": "./",
+                "description": (
+                    "Context-driven development: specs, plans, tracks, and TDD workflows"
+                ),
+            }
+        ],
+    }
+
+    marketplace_path = plugin_dir / "marketplace.json"
+    with open(marketplace_path, "w", encoding="utf-8") as outfile_handle:
+        json.dump(marketplace_payload, outfile_handle, indent=2)
         outfile_handle.write("\n")
 
     toml_to_md(
